@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import AudioControls from './components/AudioControls';
 import DragAndDrop from './components/DragAndDrop';
 import ProcessedContent from './components/ProcessedContent';
+import ParticipantList from './components/ParticipantList';
+import Chat from './components/Chat';
 
 const WhiteboardContainer = styled.div`
   width: 100%;
@@ -117,7 +119,23 @@ const ErrorMessage = styled.div`
   }
 `;
 
-const Whiteboard = () => {
+const SidePanel = styled.div`
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  bottom: 20px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 100;
+`;
+
+const MainContent = styled.div`
+  margin-right: 340px; // Make room for side panel
+`;
+
+const Whiteboard = ({ roomDetails }) => {
   const [transcription, setTranscription] = useState('');
   const [generatedContent, setGeneratedContent] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -179,52 +197,61 @@ const Whiteboard = () => {
   }, []);
 
   return (
-    <WhiteboardContainer>
-      <Header>
-        <h1>JAMIE</h1>
-        <AudioControls onTranscriptionUpdate={handleTranscriptionUpdate} />
-      </Header>
+    <>
+      <MainContent>
+        <WhiteboardContainer>
+          <Header>
+            <h1>JAMIE</h1>
+            <AudioControls onTranscriptionUpdate={handleTranscriptionUpdate} />
+          </Header>
 
-      <TranscriptionPanel>
-        <h2>Live Transcription</h2>
-        <TranscriptionText>
-          {transcription || 'Transcription will appear here...'}
-        </TranscriptionText>
-      </TranscriptionPanel>
+          <TranscriptionPanel>
+            <h2>Live Transcription</h2>
+            <TranscriptionText>
+              {transcription || 'Transcription will appear here...'}
+            </TranscriptionText>
+          </TranscriptionPanel>
 
-      <ContentPanel>
-        <h2>Generated Content</h2>
-        
-        {error && (
-          <ErrorMessage>
-            {error}
-            <button onClick={() => setError(null)}>×</button>
-          </ErrorMessage>
-        )}
+          <ContentPanel>
+            <h2>Generated Content</h2>
+            
+            {error && (
+              <ErrorMessage>
+                {error}
+                <button onClick={() => setError(null)}>×</button>
+              </ErrorMessage>
+            )}
 
-        <DragAndDrop onFilesAdded={handleFilesAdded} />
-        
-        {isLoading && (
-          <LoadingOverlay>
-            <Spinner />
-            <LoadingText>{loadingText}</LoadingText>
-          </LoadingOverlay>
-        )}
+            <DragAndDrop onFilesAdded={handleFilesAdded} />
+            
+            {isLoading && (
+              <LoadingOverlay>
+                <Spinner />
+                <LoadingText>{loadingText}</LoadingText>
+              </LoadingOverlay>
+            )}
 
-        {generatedContent.map((content, index) => (
-          <ProcessedContent 
-            key={index}
-            content={content}
-          />
-        ))}
+            {generatedContent.map((content, index) => (
+              <ProcessedContent 
+                key={index}
+                content={content}
+              />
+            ))}
 
-        {!isLoading && generatedContent.length === 0 && (
-          <ContentCard>
-            AI-generated content (charts, facts, images) will appear here...
-          </ContentCard>
-        )}
-      </ContentPanel>
-    </WhiteboardContainer>
+            {!isLoading && generatedContent.length === 0 && (
+              <ContentCard>
+                AI-generated content (charts, facts, images) will appear here...
+              </ContentCard>
+            )}
+          </ContentPanel>
+        </WhiteboardContainer>
+      </MainContent>
+
+      <SidePanel>
+        <ParticipantList />
+        <Chat />
+      </SidePanel>
+    </>
   );
 };
 
