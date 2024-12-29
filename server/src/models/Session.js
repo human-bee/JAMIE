@@ -22,7 +22,8 @@ const sessionSchema = new mongoose.Schema({
   roomName: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    index: true
   },
   status: {
     type: String,
@@ -59,7 +60,6 @@ const sessionSchema = new mongoose.Schema({
 });
 
 // Indexes
-sessionSchema.index({ roomName: 1 });
 sessionSchema.index({ createdAt: -1 });
 sessionSchema.index({ status: 1 });
 
