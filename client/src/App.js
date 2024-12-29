@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import Whiteboard from './Whiteboard';
+import RoomManager from './components/RoomManager';
+import styled from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -31,11 +33,41 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const AppContainer = styled.div`
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Logo = styled.h1`
+  margin-bottom: 2rem;
+  color: #4CAF50;
+  text-align: center;
+`;
+
 function App() {
+  const [roomDetails, setRoomDetails] = useState(null);
+
+  const handleRoomJoined = (details) => {
+    setRoomDetails(details);
+  };
+
   return (
     <>
       <GlobalStyle />
-      <Whiteboard />
+      <AppContainer>
+        {!roomDetails ? (
+          <>
+            <Logo>JAMIE</Logo>
+            <RoomManager onRoomJoined={handleRoomJoined} />
+          </>
+        ) : (
+          <Whiteboard roomDetails={roomDetails} />
+        )}
+      </AppContainer>
     </>
   );
 }
