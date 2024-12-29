@@ -1,0 +1,22 @@
+port: 7880
+rtc:
+  tcp_port: 7881
+  udp_port: 7882
+  use_external_ip: false
+
+keys:
+  devkey: secret
+
+logging:
+  json: false
+  level: info
+
+redis:
+  address: ""
+
+turn:
+  enabled: true
+  domain: ""
+  tls_port: 5349
+  udp_port: 3478
+  external_tls: false 

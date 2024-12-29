@@ -1,0 +1,33 @@
+{
+  "name": "ai-whiteboard",
+  "version": "1.0.0",
+  "description": "AI-enhanced third-guest whiteboard for podcasts and conversations",
+  "main": "server/src/index.js",
+  "scripts": {
+    "start": "node server/src/index.js",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "nodemon server/src/index.js",
+    "dev:client": "cd client && npm start",
+    "test": "jest",
+    "test:connections": "node server/src/utils/test-connections.js",
+    "build": "cd client && npm run build"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "livekit-server-sdk": "^1.2.7",
+    "mongodb": "^6.12.0",
+    "mongoose": "^8.0.3",
+    "openai": "^4.20.1",
+    "socket.io": "^4.7.2",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "eslint": "^8.55.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2",
+    "prettier": "^3.1.1"
+  }
+}
