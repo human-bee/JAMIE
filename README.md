@@ -1,4 +1,4 @@
-# JAMIE (Joint AI Multimedia Interaction Engine)
+# JAMIE (Just A Machine Infographic Enabler / Joint AI Multimedia Interaction Engine)
 
 JAMIE is an AI-enhanced whiteboard system that acts as an intelligent "third guest" for podcasts and conversations. It provides real-time transcription, fact-checking, and dynamic visualizations while facilitating rich, data-driven discussions.
 
