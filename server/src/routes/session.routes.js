@@ -1,16 +1,33 @@
 const express = require('express');
 const router = express.Router();
 const { AccessToken } = require('livekit-server-sdk');
+const sessionController = require('../controllers/sessionController');
 const logger = require('../utils/logger');
 
-// Create a new session token
-router.post('/token', (req, res) => {
+// Create a new session
+router.post('/', sessionController.createSession);
+
+// Join an existing session
+router.post('/:roomName/join', sessionController.joinSession);
+
+// Get session details
+router.get('/:roomName', sessionController.getSession);
+
+// End a session
+router.post('/:roomName/end', sessionController.endSession);
+
+// List active sessions
+router.get('/', sessionController.listSessions);
+
+// Get session token (for rejoining)
+router.post('/:roomName/token', (req, res) => {
   try {
-    const { roomName, participantName } = req.body;
+    const { roomName } = req.params;
+    const { identity, participantName } = req.body;
     
-    if (!roomName || !participantName) {
+    if (!roomName || !identity || !participantName) {
       return res.status(400).json({ 
-        error: 'Room name and participant name are required' 
+        error: 'Room name, identity, and participant name are required' 
       });
     }
 
@@ -18,7 +35,7 @@ router.post('/token', (req, res) => {
       process.env.LIVEKIT_API_KEY,
       process.env.LIVEKIT_API_SECRET,
       {
-        identity: participantName,
+        identity,
         name: participantName
       }
     );
@@ -36,17 +53,6 @@ router.post('/token', (req, res) => {
     logger.error('Error creating session token:', error);
     res.status(500).json({ error: 'Failed to create session token' });
   }
-});
-
-// Get active session info
-router.get('/:roomName', (req, res) => {
-  const { roomName } = req.params;
-  // TODO: Implement room status check with LiveKit API
-  res.json({ 
-    roomName,
-    status: 'active',
-    participantCount: 0
-  });
 });
 
 module.exports = router; 

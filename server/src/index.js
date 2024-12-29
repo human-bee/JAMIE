@@ -1,56 +1,53 @@
 require('dotenv').config();
 const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-const cors = require('cors');
 const mongoose = require('mongoose');
-const { AccessToken } = require('livekit-server-sdk');
-const logger = require('./utils/logger');
+const cors = require('cors');
 const routes = require('./routes');
+const logger = require('./utils/logger');
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: process.env.REACT_APP_API_URL,
-    methods: ['GET', 'POST']
-  }
-});
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));  // For handling large audio chunks
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
+// Mount routes
 app.use('/api', routes);
 
-// WebSocket connection handling
-io.on('connection', (socket) => {
-  logger.info(`Client connected: ${socket.id}`);
-
-  socket.on('disconnect', () => {
-    logger.info(`Client disconnected: ${socket.id}`);
-  });
-
-  // Handle whiteboard events
-  socket.on('whiteboard-update', (data) => {
-    socket.broadcast.emit('whiteboard-update', data);
-  });
-
-  // Handle AI interjection events
-  socket.on('ai-interjection', (data) => {
-    io.emit('ai-interjection', data);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  logger.error('Unhandled error:', err);
+  res.status(500).json({
+    success: false,
+    error: 'Internal server error'
   });
 });
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => logger.info('Connected to MongoDB'))
-  .catch((err) => logger.error('MongoDB connection error:', err));
+logger.info('Attempting to connect to MongoDB...');
+logger.info(`MongoDB URI: ${process.env.MONGODB_URI?.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`);
 
-// Start server
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  logger.info(`Server running on port ${PORT}`);
-}); 
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => {
+    logger.info('Successfully connected to MongoDB');
+    
+    // Start server
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      logger.info(`✨ Server is running on http://localhost:${PORT}`);
+      logger.info('Available routes:');
+      logger.info('- POST /api/sessions');
+      logger.info('- POST /api/sessions/:roomName/join');
+      logger.info('- GET /api/sessions/:roomName');
+      logger.info('- POST /api/transcriptions/:sessionId/start');
+      logger.info('- POST /api/transcriptions/:sessionId/process');
+    }).on('error', (err) => {
+      logger.error('Failed to start server:', err);
+      process.exit(1);
+    });
+  })
+  .catch((error) => {
+    logger.error('MongoDB connection error:', error);
+    process.exit(1);
+  }); 

@@ -1,19 +1,13 @@
-const express = require('express');
+import express from 'express';
+import uploadRoutes from './upload.routes.js';
+import whiteboardRoutes from './whiteboard.routes.js';
+
 const router = express.Router();
 
-// Import route modules
-const sessionRoutes = require('./session.routes');
-const whiteboardRoutes = require('./whiteboard.routes');
-const aiRoutes = require('./ai.routes');
+// File upload routes
+router.use('/upload', uploadRoutes);
 
-// Mount routes
-router.use('/sessions', sessionRoutes);
+// Whiteboard routes (for transcription, etc.)
 router.use('/whiteboard', whiteboardRoutes);
-router.use('/ai', aiRoutes);
 
-// Health check endpoint
-router.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
-});
-
-module.exports = router; 
+export default router; 
