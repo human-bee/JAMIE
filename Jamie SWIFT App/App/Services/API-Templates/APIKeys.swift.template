@@ -1,0 +1,369 @@
+import Foundation
+
+enum APIKeys: String {
+    // AI Services
+    case openAI = "OpenAI"
+    case anthropic = "Anthropic"
+    case perplexity = "Perplexity"
+    case deepgram = "Deepgram"
+    case stability = "Stability"
+    case replicateAI = "ReplicateAI"
+    case vercelAI = "VercelAI"
+    
+    // Communication & Streaming
+    case liveKit = "LiveKit"
+    case ably = "Ably"
+    case websocketHub = "WebsocketHub"
+    
+    // Data & Search
+    case googleSearch = "GoogleSearch"
+    case alphaVantage = "AlphaVantage"
+    case newsAPI = "NewsAPI"
+    case wikipedia = "Wikipedia"
+    case kaggle = "Kaggle"
+    
+    // Government & Research
+    case usCensus = "USCensus"
+    case dataGov = "DataGov"
+    case crossref = "Crossref"
+    case semanticScholar = "SemanticScholar"
+    case pubmed = "Pubmed"
+    
+    // Weather & Climate
+    case openWeatherMap = "OpenWeatherMap"
+    case noaa = "NOAA"
+    
+    // Financial
+    case financialModelingPrep = "FinancialModelingPrep"
+    case coinbase = "Coinbase"
+    
+    // Geographic
+    case mapbox = "Mapbox"
+    case openCage = "OpenCage"
+    
+    // Science & Research
+    case nasa = "NASA"
+    case worldbank = "Worldbank"
+    case core = "Core"
+    case unpaywall = "Unpaywall"
+    case arxiv = "Arxiv"
+    case lens = "Lens"
+    
+    // Media & Content
+    case internetArchive = "InternetArchive"
+    case spotify = "Spotify"
+    case youtubeData = "YoutubeData"
+    case mediastack = "Mediastack"
+    
+    // Visualization
+    case plotly = "Plotly"
+    case flourish = "Flourish"
+    case datawrapper = "Datawrapper"
+    
+    // Fact Checking
+    case googleFactCheck = "GoogleFactCheck"
+    case snopes = "Snopes"
+    
+    // Image Processing
+    case cloudinary = "Cloudinary"
+    case imgur = "Imgur"
+    
+    // Scientific Computing
+    case wolframAlpha = "WolframAlpha"
+    case mathpix = "Mathpix"
+    
+    // UI & Deployment
+    case streamlit = "Streamlit"
+    case gradio = "Gradio"
+    
+    enum APIError: Error {
+        case missingCredentials
+        case invalidConfiguration
+        case keychainError
+        
+        var localizedDescription: String {
+            switch self {
+            case .missingCredentials:
+                return "Required API credentials are missing"
+            case .invalidConfiguration:
+                return "Invalid API configuration"
+            case .keychainError:
+                return "Failed to access keychain"
+            }
+        }
+    }
+    
+    struct Credentials: Codable {
+        let apiKey: String
+        let apiSecret: String?
+        let wsURL: String?
+        let organizationId: String?
+        let model: String?
+        let username: String?
+        let email: String?
+        let userAgent: String?
+        let clientId: String?
+        let format: String?
+        let appId: String?
+        let url: String?
+        
+        init(apiKey: String = "", 
+             apiSecret: String? = nil, 
+             wsURL: String? = nil,
+             organizationId: String? = nil,
+             model: String? = nil,
+             username: String? = nil,
+             email: String? = nil,
+             userAgent: String? = nil,
+             clientId: String? = nil,
+             format: String? = nil,
+             appId: String? = nil,
+             url: String? = nil) {
+            self.apiKey = apiKey
+            self.apiSecret = apiSecret
+            self.wsURL = wsURL
+            self.organizationId = organizationId
+            self.model = model
+            self.username = username
+            self.email = email
+            self.userAgent = userAgent
+            self.clientId = clientId
+            self.format = format
+            self.appId = appId
+            self.url = url
+        }
+    }
+    
+    static func loadFromEnvironment() throws {
+        let keychain = KeychainHelper.shared
+        var loadedKeys = false
+        let env = ProcessInfo.processInfo.environment
+        
+        // AI Services
+        if let key = env["OPENAI_API_KEY"],
+           let orgId = env["OPENAI_ORG_ID"] {
+            keychain.saveAPICredentials(
+                Credentials(
+                    apiKey: key,
+                    organizationId: orgId,
+                    model: env["OPENAI_MODEL"] ?? "gpt-4-1106-preview"
+                ),
+                for: .openAI
+            )
+            loadedKeys = true
+        }
+        
+        if let key = env["ANTHROPIC_API_KEY"] {
+            keychain.saveAPICredentials(
+                Credentials(
+                    apiKey: key,
+                    model: env["ANTHROPIC_MODEL"] ?? "claude-2.1"
+                ),
+                for: .anthropic
+            )
+            loadedKeys = true
+        }
+        
+        if let key = env["PERPLEXITY_API_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .perplexity)
+            loadedKeys = true
+        }
+        
+        if let key = env["DEEPGRAM_API_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .deepgram)
+            loadedKeys = true
+        }
+        
+        // Communication & Streaming
+        if let key = env["LIVEKIT_API_KEY"],
+           let secret = env["LIVEKIT_API_SECRET"],
+           let wsURL = env["LIVEKIT_WS_URL"] {
+            keychain.saveAPICredentials(
+                Credentials(
+                    apiKey: key,
+                    apiSecret: secret,
+                    wsURL: wsURL
+                ),
+                for: .liveKit
+            )
+            loadedKeys = true
+        }
+        
+        // Data & Search
+        if let key = env["GOOGLE_CUSTOM_SEARCH_API_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .googleSearch)
+            loadedKeys = true
+        }
+        
+        if let key = env["ALPHA_VANTAGE_API_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .alphaVantage)
+            loadedKeys = true
+        }
+        
+        if let key = env["NEWSAPI_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .newsAPI)
+            loadedKeys = true
+        }
+        
+        if let userAgent = env["WIKIPEDIA_API_USER_AGENT"] {
+            keychain.saveAPICredentials(Credentials(userAgent: userAgent), for: .wikipedia)
+            loadedKeys = true
+        }
+        
+        // Kaggle
+        if let username = env["KAGGLE_USERNAME"],
+           let key = env["KAGGLE_KEY"] {
+            keychain.saveAPICredentials(
+                Credentials(
+                    apiKey: key,
+                    username: username
+                ),
+                for: .kaggle
+            )
+            loadedKeys = true
+        }
+        
+        // Government & Research
+        if let key = env["US_CENSUS_API_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .usCensus)
+            loadedKeys = true
+        }
+        
+        if let key = env["DATA_GOV_API_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .dataGov)
+            loadedKeys = true
+        }
+        
+        if let email = env["CROSSREF_API_EMAIL"] {
+            keychain.saveAPICredentials(Credentials(email: email), for: .crossref)
+            loadedKeys = true
+        }
+        
+        // Weather & Climate
+        if let key = env["OPENWEATHERMAP_API_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .openWeatherMap)
+            loadedKeys = true
+        }
+        
+        if let key = env["NOAA_API_TOKEN"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .noaa)
+            loadedKeys = true
+        }
+        
+        // Financial
+        if let key = env["FINANCIAL_MODELING_PREP_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .financialModelingPrep)
+            loadedKeys = true
+        }
+        
+        // Geographic
+        if let key = env["MAPBOX_API_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .mapbox)
+            loadedKeys = true
+        }
+        
+        // Science & Research
+        if let key = env["NASA_API_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .nasa)
+            loadedKeys = true
+        }
+        
+        if let format = env["WORLDBANK_API_FORMAT"] {
+            keychain.saveAPICredentials(Credentials(format: format), for: .worldbank)
+            loadedKeys = true
+        }
+        
+        // Media & Content
+        if let key = env["INTERNET_ARCHIVE_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .internetArchive)
+            loadedKeys = true
+        }
+        
+        if let key = env["SPOTIFY_API_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .spotify)
+            loadedKeys = true
+        }
+        
+        // Image Processing
+        if let key = env["STABILITY_API_KEY"] {
+            keychain.saveAPICredentials(
+                Credentials(
+                    apiKey: key,
+                    model: env["STABILITY_MODEL"] ?? "stable-diffusion-xl-1024-v1-0"
+                ),
+                for: .stability
+            )
+            loadedKeys = true
+        }
+        
+        if let url = env["CLOUDINARY_URL"] {
+            keychain.saveAPICredentials(Credentials(url: url), for: .cloudinary)
+            loadedKeys = true
+        }
+        
+        if let clientId = env["IMGUR_CLIENT_ID"] {
+            keychain.saveAPICredentials(Credentials(clientId: clientId), for: .imgur)
+            loadedKeys = true
+        }
+        
+        // Scientific Computing
+        if let appId = env["WOLFRAM_ALPHA_APPID"] {
+            keychain.saveAPICredentials(Credentials(appId: appId), for: .wolframAlpha)
+            loadedKeys = true
+        }
+        
+        if let key = env["MATHPIX_API_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .mathpix)
+            loadedKeys = true
+        }
+        
+        // UI & Deployment
+        if let token = env["REPLICATE_API_TOKEN"] {
+            keychain.saveAPICredentials(Credentials(apiKey: token), for: .replicateAI)
+            loadedKeys = true
+        }
+        
+        if let key = env["VERCEL_AI_API_KEY"] {
+            keychain.saveAPICredentials(Credentials(apiKey: key), for: .vercelAI)
+            loadedKeys = true
+        }
+        
+        if !loadedKeys {
+            throw APIError.missingCredentials
+        }
+    }
+    
+    func getCredentials() throws -> Credentials {
+        guard let credentials = KeychainHelper.shared.getAPICredentials(for: self) else {
+            throw APIError.missingCredentials
+        }
+        return credentials
+    }
+    
+    static func validateConfiguration() throws {
+        // Validate required services
+        guard let openAICredentials = try? APIKeys.openAI.getCredentials(),
+              !openAICredentials.apiKey.isEmpty else {
+            throw APIError.missingCredentials
+        }
+        
+        // Validate LiveKit if video/audio features are enabled
+        #if ENABLE_LIVEKIT
+        guard let livekitCredentials = try? APIKeys.liveKit.getCredentials(),
+              let wsURL = livekitCredentials.wsURL,
+              !livekitCredentials.apiKey.isEmpty,
+              !livekitCredentials.apiSecret!.isEmpty,
+              !wsURL.isEmpty else {
+            throw APIError.missingCredentials
+        }
+        #endif
+    }
+    
+    static func clearAllCredentials() {
+        let keychain = KeychainHelper.shared
+        // Clear all API service credentials
+        APIKeys.allCases.forEach { service in
+            keychain.delete(service: service.rawValue, account: "APICredentials")
+        }
+    }
+} 

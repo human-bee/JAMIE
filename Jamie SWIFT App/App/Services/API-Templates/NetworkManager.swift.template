@@ -1,0 +1,10 @@
+import Foundation
+
+class APIManager {
+    static let shared = APIManager()
+    private init() {}
+    
+    func getCredentials(for service: APIKeys) -> APIKeys.Credentials? {
+        return KeychainHelper.shared.getAPICredentials(for: service)
+    }
+} 

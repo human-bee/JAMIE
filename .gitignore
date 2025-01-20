@@ -1,3 +1,48 @@
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Xcode
+xcuserdata/
+*.xcodeproj/
+*.xcworkspace/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# Environment and Secrets
+.env*
+Jamie\ SWIFT\ App/App/Services/API/
+**/Services/API/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Temporary Files
+.temp/
+.tmp/
+.cache/
+temp/
+combined_files.txt
+**/segment_*.wav
+**/segment_*.json
+**/segment*.b64
+
+# Logs
+*.log
+
 # Dependencies
 node_modules/
 /.pnp
@@ -11,7 +56,6 @@ node_modules/
 /dist
 
 # Environment files
-.env
 .env.local
 .env.development.local
 .env.test.local
@@ -22,29 +66,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 logs
-*.log
 
 # Runtime data
 pids
 *.pid
 *.seed
 *.pid.lock
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Temp files
-.temp
-.tmp
-.cache
 
 # Optional npm cache directory
 .npm
@@ -60,19 +87,3 @@ pids
 
 # Yarn Integrity file
 .yarn-integrity
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Temporary and processing files
-temp/
-combined_files.txt
-**/segment_*.wav
-**/segment_*.json
-**/segment*.b64
