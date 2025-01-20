@@ -60,3 +60,19 @@ pids
 
 # Yarn Integrity file
 .yarn-integrity
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary and processing files
+temp/
+combined_files.txt
+**/segment_*.wav
+**/segment_*.json
+**/segment*.b64
