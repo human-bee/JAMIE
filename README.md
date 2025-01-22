@@ -25,10 +25,10 @@ JAMIE is an AI-enhanced whiteboard system that acts as an intelligent "third gue
 
 ### Prerequisites
 
-- Node.js (v16 or higher)
-- MongoDB
+- Xcode 15.0 or higher
+- macOS 14.0 or higher
 - LiveKit account
-- OpenAI API key
+- Various API keys (see Configuration section)
 
 ### Installation
 
@@ -38,32 +38,35 @@ JAMIE is an AI-enhanced whiteboard system that acts as an intelligent "third gue
    cd jamie
    ```
 
-2. Install dependencies:
+2. Set up API credentials:
    ```bash
-   npm install
-   cd client && npm install
+   cd "Jamie SWIFT App/App/Services"
+   cp -r API-Templates API
+   cd API
+   # Remove .template extensions from files
+   for file in *.template; do mv "$file" "${file%.template}"; done
    ```
 
-3. Set up environment variables:
+3. Configure environment variables:
    ```bash
-   cp .env.example .env
+   cp Config/.env.example Config/.env
    # Edit .env with your API keys and configuration
    ```
 
-4. Start the development servers:
+4. Open the Xcode project:
    ```bash
-   npm run dev
+   open "Jamie SWIFT App.xcodeproj"
    ```
+
+5. Build and run the project in Xcode
 
 ## 🔧 Configuration
 
-Create a `.env` file with the following variables:
+Create a `.env` file in the Config directory with your API keys. See `Jamie SWIFT App/App/Services/API-Templates/README.md` for a complete list of supported APIs and required environment variables.
+
+Key configurations include:
 
 ```env
-# Server Configuration
-PORT=3000
-NODE_ENV=development
-
 # LiveKit Configuration
 LIVEKIT_API_KEY=your_api_key
 LIVEKIT_API_SECRET=your_api_secret
@@ -71,9 +74,11 @@ LIVEKIT_WS_URL=your_livekit_url
 
 # OpenAI Configuration
 OPENAI_API_KEY=your_openai_key
+OPENAI_ORG_ID=your_org_id
 
-# MongoDB Configuration
-MONGODB_URI=your_mongodb_uri
+# Other AI Services
+ANTHROPIC_API_KEY=your_key_here
+PERPLEXITY_API_KEY=your_key_here
 ```
 
 ## 🏗️ Architecture
@@ -90,20 +95,20 @@ MONGODB_URI=your_mongodb_uri
    - Fact-checking and web search capabilities
 
 3. **Whiteboard Interface**
-   - React-based frontend
+   - SwiftUI-based interface
    - Real-time collaborative canvas
    - Dynamic visualization rendering
 
-4. **Backend Services**
-   - Express.js server
-   - MongoDB for data persistence
-   - WebSocket server for real-time updates
+4. **Services Layer**
+   - API integration management
+   - Secure credential storage
+   - Real-time data synchronization
 
 ## 🛡️ Security Notes
 
 - Never commit your `.env` file
-- Keep your API keys secure
-- The repository includes only example/template API keys
+- API credentials are stored securely in the macOS Keychain
+- The `API` directory is included in `.gitignore`
 - Follow security best practices when deploying
 
 ## 🤝 Contributing
@@ -122,7 +127,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - OpenAI for GPT and Whisper APIs
 - LiveKit for real-time communication
-- MongoDB for database services
 - All contributors and supporters
 
 ## ⚠️ Disclaimer
