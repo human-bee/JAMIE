@@ -313,6 +313,53 @@
   - [ ] Edge computing capabilities
   - [ ] Reduced cloud dependency
 
+## 🎯 Premium Features Status
+
+### Premium Session & Magazine Layout
+
+- [x] **Implement One-Click Premium Session**
+  - [x] Add `startPremiumSession()` to `LiveKitService`
+  - [x] Connect automatically to ephemeral or random room
+  - [x] Apply high-quality video/audio constraints (4 Mbps, stereo audio)
+
+- [x] **PiP Overlays**
+  - [x] Create `PiPOverlayView` 
+  - [x] Display remote video tracks in corner tiles
+  - [x] Fade if not speaking, highlight if audio level above threshold
+  - [ ] Adjust corner positions dynamically based on # of participants
+
+- [x] **Magazine-Style Layout**
+  - [x] `MagazineLayoutManager` for golden-ratio multi-column
+  - [x] Toggle in CanvasView toolbar
+  - [ ] Graceful fallback if user tries to drag objects while layout is locked
+
+### Premium Features Next Steps
+
+1. **Finish Real Token Generation**  
+   - [ ] Replace placeholder token generation with live JWT from a server or local function
+   - [ ] Add token refresh mechanism
+   - [ ] Implement secure token storage
+
+2. **PiP Enhancements**  
+   - [ ] Animate smooth fade transitions
+   - [ ] Float active speaker in a bigger tile
+   - [ ] Add user preferences for PiP positions
+
+3. **Canvas Polishing**  
+   - [ ] Add dynamic text flows (wrapped paragraphs, multi-column text boxes)
+   - [ ] Optionally incorporate auto-typography (e.g., type styles, headings)
+   - [ ] Improve magazine layout responsiveness
+
+4. **Testing & QA**  
+   - [ ] Multi-participant stress test 
+   - [ ] Edge cases: slow connections, dropping participants, device rotation
+   - [ ] Performance testing with multiple HD streams
+
+5. **Documentation**  
+   - [ ] Add advanced customization docs for `MagazineLayoutManager`
+   - [ ] Create screenshots and video demos
+   - [ ] Document premium session setup process
+
 ## Progress Tracking
 - Total Tasks: 0/83 completed
 - Emergency Tasks: 0/7 completed

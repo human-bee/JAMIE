@@ -8,6 +8,7 @@ JAMIE is an AI-enhanced whiteboard system that acts as an intelligent "third gue
   - Video/audio streaming via LiveKit
   - Real-time whiteboard collaboration
   - AI voice interjections for fact-checking
+  - Premium high-quality sessions with PiP overlays
 
 - **AI-Powered Analysis**
   - Speech-to-text transcription
@@ -20,6 +21,36 @@ JAMIE is an AI-enhanced whiteboard system that acts as an intelligent "third gue
   - AI-generated visualizations and charts
   - Real-time collaboration features
   - Magazine-style layout options
+
+## ✨ Premium Features
+
+### One-Click Premium Session
+- Start an automated LiveKit session with high-quality video/audio settings
+- Button: "Start Premium Session"
+- Fetches or generates a LiveKit token behind the scenes
+- Displays a star icon in UI to highlight Premium status
+
+### PiP / Floating Video Overlays
+- Participants' webcam feeds appear in corners
+- Slight fade when not speaking, highlight when speaking
+- Minimal, professional overlay style with participant names
+
+### Magazine-Style Layout
+- Toggle to rearrange text/media in a sophisticated, column-based layout
+- Uses approximate golden ratio spacing
+- Differentiates text from images/charts for better "magazine" flow
+
+### How to Use Premium Features
+
+1. **Starting Premium Session**  
+   - On the main `ContentView`, tap "Start Premium Session."
+   - The app will create/connect to a premium LiveKit room automatically.
+   - Participants who join see PiP overlays in each corner.
+
+2. **Enabling Magazine Layout**  
+   - Inside the canvas, tap the "magazine" icon (toolbar).
+   - Elements automatically rearrange with column-based logic, giving a "newspaper" feel.
+   - Toggling off reverts to free-form drag/scale.
 
 ## 🚀 Quick Start
 
