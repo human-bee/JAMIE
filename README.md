@@ -8,7 +8,6 @@ JAMIE is an AI-enhanced whiteboard system that acts as an intelligent "third gue
   - Video/audio streaming via LiveKit
   - Real-time whiteboard collaboration
   - AI voice interjections for fact-checking
-  - Premium high-quality sessions with PiP overlays
 
 - **AI-Powered Analysis**
   - Speech-to-text transcription
@@ -25,20 +24,25 @@ JAMIE is an AI-enhanced whiteboard system that acts as an intelligent "third gue
 ## ✨ Premium Features
 
 ### One-Click Premium Session
-- Start an automated LiveKit session with high-quality video/audio settings
+- Start an automated LiveKit session with high-quality video/audio settings (1080p/30fps)
 - Button: "Start Premium Session"
 - Fetches or generates a LiveKit token behind the scenes
 - Displays a star icon in UI to highlight Premium status
 
 ### PiP / Floating Video Overlays
-- Participants' webcam feeds appear in corners
-- Slight fade when not speaking, highlight when speaking
-- Minimal, professional overlay style with participant names
+- Participants' webcam feeds appear in corners with elegant white borders
+- Smooth fade transitions (0.6s duration) when speaking state changes
+- Professional overlay style with participant names on dark backdrop
+- Supports up to 4 simultaneous participant feeds
+- Automatic opacity adjustment (100% when speaking, 70% when silent)
 
 ### Magazine-Style Layout
-- Toggle to rearrange text/media in a sophisticated, column-based layout
-- Uses approximate golden ratio spacing
-- Differentiates text from images/charts for better "magazine" flow
+- Toggle to rearrange text/media in a sophisticated, multi-column layout
+- Smart column management (2-4 columns based on content)
+- Golden ratio-based spacing with 40px column gaps
+- Intelligent text flow between columns with height estimation
+- Media elements (images/charts) organized in right-side grid
+- Maintains 80% height limit for optimal readability
 
 ### How to Use Premium Features
 
@@ -46,10 +50,12 @@ JAMIE is an AI-enhanced whiteboard system that acts as an intelligent "third gue
    - On the main `ContentView`, tap "Start Premium Session."
    - The app will create/connect to a premium LiveKit room automatically.
    - Participants who join see PiP overlays in each corner.
+   - Experience high-quality video (1080p) and stereo audio.
 
 2. **Enabling Magazine Layout**  
    - Inside the canvas, tap the "magazine" icon (toolbar).
-   - Elements automatically rearrange with column-based logic, giving a "newspaper" feel.
+   - Text automatically flows between columns based on content length.
+   - Media elements arrange in a grid on the right side.
    - Toggling off reverts to free-form drag/scale.
 
 ## 🚀 Quick Start

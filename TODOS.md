@@ -321,17 +321,24 @@
   - [x] Add `startPremiumSession()` to `LiveKitService`
   - [x] Connect automatically to ephemeral or random room
   - [x] Apply high-quality video/audio constraints (4 Mbps, stereo audio)
+  - [x] Configure 1080p/30fps video settings
 
 - [x] **PiP Overlays**
   - [x] Create `PiPOverlayView` 
   - [x] Display remote video tracks in corner tiles
-  - [x] Fade if not speaking, highlight if audio level above threshold
+  - [x] Implement smooth fade transitions (0.6s duration)
+  - [x] Add elegant white borders and shadows
   - [ ] Adjust corner positions dynamically based on # of participants
+  - [ ] Add drag-to-reposition capability for PiP tiles
 
 - [x] **Magazine-Style Layout**
-  - [x] `MagazineLayoutManager` for golden-ratio multi-column
-  - [x] Toggle in CanvasView toolbar
-  - [ ] Graceful fallback if user tries to drag objects while layout is locked
+  - [x] `MagazineLayoutManager` for multi-column layout
+  - [x] Implement smart column management (2-4 columns)
+  - [x] Add intelligent text flow between columns
+  - [x] Configure 40px column gaps with golden ratio
+  - [x] Organize media in right-side grid
+  - [ ] Add text height measurement for optimal flow
+  - [ ] Implement graceful fallback for drag operations
 
 ### Premium Features Next Steps
 
@@ -341,24 +348,34 @@
    - [ ] Implement secure token storage
 
 2. **PiP Enhancements**  
-   - [ ] Animate smooth fade transitions
+   - [x] Implement smooth fade transitions
    - [ ] Float active speaker in a bigger tile
    - [ ] Add user preferences for PiP positions
+   - [ ] Support drag-and-drop PiP rearrangement
+   - [ ] Add picture-in-picture system support
 
 3. **Canvas Polishing**  
-   - [ ] Add dynamic text flows (wrapped paragraphs, multi-column text boxes)
-   - [ ] Optionally incorporate auto-typography (e.g., type styles, headings)
+   - [x] Implement multi-column text flow
+   - [ ] Add dynamic text height measurement
+   - [ ] Add typography presets (headings, body, etc.)
    - [ ] Improve magazine layout responsiveness
+   - [ ] Add column break controls
 
 4. **Testing & QA**  
-   - [ ] Multi-participant stress test 
-   - [ ] Edge cases: slow connections, dropping participants, device rotation
+   - [ ] Run full test plan for PiP features
+   - [ ] Verify magazine layout with various content types
+   - [ ] Test premium video quality (1080p/30fps)
+   - [ ] Test stereo audio quality
+   - [ ] Multi-participant stress test
+   - [ ] Edge cases: slow connections, dropping participants
    - [ ] Performance testing with multiple HD streams
 
 5. **Documentation**  
-   - [ ] Add advanced customization docs for `MagazineLayoutManager`
+   - [ ] Document `MagazineLayoutManager` customization
    - [ ] Create screenshots and video demos
-   - [ ] Document premium session setup process
+   - [ ] Add premium features setup guide
+   - [ ] Document PiP overlay system
+   - [ ] Create troubleshooting guide
 
 ## Progress Tracking
 - Total Tasks: 0/83 completed
