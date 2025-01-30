@@ -7,6 +7,9 @@ struct ContentView: View {
     @State private var roomURL = ""
     @State private var token = ""
     @State private var showCanvas = false
+    @State private var premiumMode = false
+    @State private var showError = false
+    @State private var errorMessage = ""
     
     init() {
         let transcriptionManager = TranscriptionManager()
@@ -20,15 +23,38 @@ struct ContentView: View {
                 // LiveKit Connection Status
                 HStack {
                     if liveKitService.isConnected {
-                        Label("Connected", systemImage: "circle.fill")
-                            .foregroundColor(.green)
-                        Button("Disconnect") {
+                        Label(premiumMode ? "Premium Session" : "Connected", 
+                              systemImage: premiumMode ? "star.fill" : "circle.fill")
+                            .foregroundColor(premiumMode ? .yellow : .green)
+                        Button(premiumMode ? "End Premium" : "Disconnect") {
                             liveKitService.disconnect()
+                            premiumMode = false
                         }
                         .buttonStyle(.bordered)
+                        .tint(premiumMode ? .yellow : .blue)
                     } else {
                         Label("Disconnected", systemImage: "circle.fill")
                             .foregroundColor(.red)
+                        
+                        // Premium Session Button
+                        Button(action: {
+                            Task {
+                                do {
+                                    try await liveKitService.startPremiumSession()
+                                    premiumMode = true
+                                } catch {
+                                    errorMessage = error.localizedDescription
+                                    showError = true
+                                }
+                            }
+                        }) {
+                            Label("Start Premium Session", systemImage: "star.fill")
+                                .padding(.horizontal)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.yellow)
+                        
+                        // Keep the regular connect button for development
                         Button("Connect") {
                             showingConnectionSheet = true
                         }
@@ -79,7 +105,13 @@ struct ContentView: View {
                     .padding()
                 
                 if showCanvas {
-                    CanvasView()
+                    ZStack {
+                        CanvasView()
+                        
+                        if premiumMode {
+                            PiPOverlayView(liveKitService: liveKitService)
+                        }
+                    }
                 }
             }
             .sheet(isPresented: $showingConnectionSheet) {
@@ -90,6 +122,11 @@ struct ContentView: View {
                         }
                     }
                 }
+            }
+            .alert("Connection Error", isPresented: $showError) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(errorMessage)
             }
         }
     }

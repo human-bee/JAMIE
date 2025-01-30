@@ -7,9 +7,11 @@ class LiveKitService: ObservableObject {
     @Published var isConnected: Bool = false
     @Published var room: Room?
     @Published var participants: [Participant] = []
+    @Published var speakingParticipants: Set<String> = []
     
     private var cancellables = Set<AnyCancellable>()
     private let transcriptionManager: TranscriptionManager
+    private let audioLevelThreshold: Float = 0.1 // Adjust this value to change speaking detection sensitivity
     
     init(transcriptionManager: TranscriptionManager) {
         self.transcriptionManager = transcriptionManager
@@ -26,7 +28,36 @@ class LiveKitService: ObservableObject {
         }
     }
     
-    func connect(url: URL, token: String) async {
+    func startPremiumSession() async throws {
+        // Get LiveKit credentials from keychain
+        guard let credentials = try? APIKeys.liveKit.getCredentials(),
+              let wsURL = credentials.wsURL,
+              !credentials.apiKey.isEmpty,
+              !credentials.apiSecret!.isEmpty else {
+            throw APIError.missingCredentials
+        }
+        
+        // Generate a random room name for the premium session
+        let roomName = "premium-\(UUID().uuidString)"
+        
+        // Create a token with the room name
+        let token = try generateToken(roomName: roomName, apiKey: credentials.apiKey, apiSecret: credentials.apiSecret!)
+        
+        // Connect to the room
+        guard let url = URL(string: wsURL) else {
+            throw URLError(.badURL)
+        }
+        
+        try await connect(url: url, token: token, isPremium: true)
+    }
+    
+    private func generateToken(roomName: String, apiKey: String, apiSecret: String) throws -> String {
+        // This is a placeholder - you would typically use a JWT library to generate the token
+        // For now, we'll use a backend endpoint or the LiveKit server's token generation
+        return "YOUR_GENERATED_TOKEN" // Replace with actual token generation
+    }
+    
+    func connect(url: URL, token: String, isPremium: Bool = false) async {
         let newRoom = Room()
         self.room = newRoom
         
@@ -34,6 +65,12 @@ class LiveKitService: ObservableObject {
         
         do {
             try await newRoom.connect(url.absoluteString, token)
+            
+            if isPremium {
+                // Configure premium quality settings
+                try await configurePremiumQuality()
+            }
+            
             await MainActor.run {
                 self.isConnected = true
                 self.subscribeToAudioTracks()
@@ -45,6 +82,29 @@ class LiveKitService: ObservableObject {
                 self.room = nil
             }
         }
+    }
+    
+    private func configurePremiumQuality() async throws {
+        guard let room = room else { return }
+        
+        // Configure video quality
+        let videoConfig = VideoPublishOptions(
+            dimensions: .init(width: 1920, height: 1080),
+            maxBitrate: 4_000_000, // 4 Mbps for high quality
+            maxFrameRate: 30
+        )
+        
+        // Configure audio quality
+        let audioConfig = AudioPublishOptions(
+            name: "premium-audio",
+            bitrate: 128_000, // 128 kbps for high quality audio
+            dtx: false, // Disable discontinuous transmission for better quality
+            stereo: true
+        )
+        
+        // Apply configurations
+        try await room.localParticipant?.setVideoPublishOptions(videoConfig)
+        try await room.localParticipant?.setAudioPublishOptions(audioConfig)
     }
     
     func disconnect() {
@@ -127,7 +187,18 @@ extension LiveKitService: ParticipantDelegate {
 
 extension LiveKitService: AudioTrackDelegate {
     func track(_ track: Track, didUpdate audioLevel: Float) {
-        // Optional: Handle audio level updates for UI feedback
+        if audioLevel > audioLevelThreshold {
+            if let participant = (track as? RemoteAudioTrack)?.participant {
+                DispatchQueue.main.async {
+                    self.speakingParticipants.insert(participant.sid)
+                    
+                    // Remove participant from speaking list after a delay
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        self.speakingParticipants.remove(participant.sid)
+                    }
+                }
+            }
+        }
     }
     
     func audioTrack(_ track: AudioTrack, didReceive audioFrame: AudioFrame) {

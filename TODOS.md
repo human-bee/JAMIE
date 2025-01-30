@@ -45,6 +45,9 @@
   - [ ] Configure SwiftUI app architecture
   - [ ] Set up Swift Package Manager
   - [ ] Create development guidelines
+  - [ ] Integrate SwiftLint or SwiftFormat for code consistency
+  - [ ] Adopt Swift Concurrency (async/await) for core workflows
+  - [ ] Evaluate Swift structured concurrency performance
 - [ ] Metal Integration
   - [ ] Set up Metal compute pipeline
   - [ ] Create shader library
@@ -317,6 +320,6 @@
 - Long-term Tasks: 0/16 completed
 - Future Considerations: 0/15 completed
 
-Last Updated: January 20, 2025
+Last Updated: January 29, 2025
 
 Note: This is a living document. Tasks will be added, modified, or removed as the project evolves. 

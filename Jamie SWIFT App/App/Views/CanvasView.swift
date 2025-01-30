@@ -5,6 +5,7 @@ struct CanvasView: View {
     @GestureState private var dragOffset = CGSize.zero
     @State private var position = CGPoint(x: 0, y: 0)
     @State private var scale: CGFloat = 1.0
+    @State private var magazineLayoutEnabled = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -16,7 +17,7 @@ struct CanvasView: View {
                     ZStack {
                         // Grid background
                         GridBackground()
-                            .opacity(0.1)
+                            .opacity(magazineLayoutEnabled ? 0.05 : 0.1)
                         
                         // Canvas elements
                         ForEach(viewModel.elements) { element in
@@ -27,22 +28,33 @@ struct CanvasView: View {
                         }
                     }
                     .frame(width: geometry.size.width * 2, height: geometry.size.height * 2)
+                    .onChange(of: magazineLayoutEnabled) { newValue in
+                        if newValue {
+                            viewModel.applyMagazineLayout(in: geometry.size)
+                        }
+                    }
                 }
             }
             .gesture(
                 DragGesture()
                     .updating($dragOffset) { value, state, _ in
-                        state = value.translation
+                        if !magazineLayoutEnabled {
+                            state = value.translation
+                        }
                     }
                     .onEnded { value in
-                        position.x += value.translation.width
-                        position.y += value.translation.height
+                        if !magazineLayoutEnabled {
+                            position.x += value.translation.width
+                            position.y += value.translation.height
+                        }
                     }
             )
             .gesture(
                 MagnificationGesture()
                     .onChanged { value in
-                        scale = value
+                        if !magazineLayoutEnabled {
+                            scale = value
+                        }
                     }
             )
             .toolbar {
@@ -56,6 +68,24 @@ struct CanvasView: View {
                     Button(action: { viewModel.addChartElement(data: [:]) }) {
                         Image(systemName: "chart.bar")
                     }
+                    
+                    Divider()
+                    
+                    // Magazine Layout Toggle
+                    Button(action: {
+                        withAnimation(.spring()) {
+                            magazineLayoutEnabled.toggle()
+                            if magazineLayoutEnabled {
+                                // Reset transformations when enabling magazine layout
+                                position = .zero
+                                scale = 1.0
+                            }
+                        }
+                    }) {
+                        Image(systemName: magazineLayoutEnabled ? "text.justify" : "text.alignleft")
+                            .foregroundColor(magazineLayoutEnabled ? .yellow : .primary)
+                    }
+                    .help(magazineLayoutEnabled ? "Disable Magazine Layout" : "Enable Magazine Layout")
                 }
             }
         }
@@ -127,6 +157,10 @@ class CanvasViewModel: ObservableObject {
             print("Failed to decode chart payload: \(error.localizedDescription)")
         }
     }
+    
+    func applyMagazineLayout(in size: CGSize) {
+        // Implementation of applyMagazineLayout method
+    }
 }
 
 struct CanvasElement: Identifiable {
@@ -144,6 +178,7 @@ enum ElementType {
 
 struct CanvasElementView: View {
     let element: CanvasElement
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         switch element.type {
@@ -151,7 +186,8 @@ struct CanvasElementView: View {
             if let text = element.content as? String {
                 Text(text)
                     .padding()
-                    .background(Color.white)
+                    .frame(maxWidth: 300)
+                    .background(colorScheme == .dark ? Color(.windowBackgroundColor) : .white)
                     .cornerRadius(8)
                     .shadow(radius: 2)
             }
@@ -166,8 +202,8 @@ struct CanvasElementView: View {
                     Image(systemName: "photo")
                         .resizable()
                 }
-                .frame(width: 100, height: 100)
-                .background(Color.white)
+                .frame(width: 200, height: 200)
+                .background(colorScheme == .dark ? Color(.windowBackgroundColor) : .white)
                 .cornerRadius(8)
                 .shadow(radius: 2)
             }
@@ -175,7 +211,8 @@ struct CanvasElementView: View {
             if let data = element.content as? Data,
                let payload = try? JSONDecoder().decode(ChartPayload.self, from: data) {
                 payload.createChart()
-                    .background(Color.white)
+                    .frame(width: 200, height: 200)
+                    .background(colorScheme == .dark ? Color(.windowBackgroundColor) : .white)
                     .cornerRadius(8)
                     .shadow(radius: 2)
             }
