@@ -362,8 +362,19 @@
    - [ ] Add column break controls
 
 4. **Testing & QA**  
-   - [ ] Run full test plan for PiP features
-   - [ ] Verify magazine layout with various content types
+   - [ ] Run full test plan for PiP features:
+     - [ ] Basic overlay appearance and positioning
+     - [ ] Speaking state transitions (0.6s fade)
+     - [ ] Drag and reposition PiPs:
+       - [ ] Verify drag gesture works smoothly
+       - [ ] Check position memory after speaking changes
+       - [ ] Test dragging multiple PiPs to new positions
+       - [ ] Verify positions reset correctly on session restart
+   - [ ] Verify magazine layout with various content:
+     - [ ] Test column flow with different text lengths
+     - [ ] Verify partial overlap threshold (40%) works correctly
+     - [ ] Check media grid alignment and spacing
+     - [ ] Test dynamic column count adjustment
    - [ ] Test premium video quality (1080p/30fps)
    - [ ] Test stereo audio quality
    - [ ] Multi-participant stress test

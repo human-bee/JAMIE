@@ -58,8 +58,11 @@ class MagazineLayoutManager {
             // Get or estimate element height
             let elementHeight = estimateElementHeight(element, columnWidth: columnWidth)
             
-            // Check if we need to move to next column
-            if currentY + elementHeight > maxColumnHeight {
+            // Check if we need to move to next column, with partial overlap threshold
+            let remainingSpace = maxColumnHeight - currentY
+            let overlapThreshold = elementHeight * 0.4 // Allow up to 40% overlap
+            
+            if remainingSpace < elementHeight - overlapThreshold {
                 currentColumn += 1
                 currentY = columnSpacing
                 
