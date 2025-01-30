@@ -192,8 +192,8 @@ extension LiveKitService: AudioTrackDelegate {
                 DispatchQueue.main.async {
                     self.speakingParticipants.insert(participant.sid)
                     
-                    // Remove participant from speaking list after a delay
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    // Remove participant from speaking list after the fade duration
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                         self.speakingParticipants.remove(participant.sid)
                     }
                 }

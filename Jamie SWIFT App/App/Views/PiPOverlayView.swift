@@ -4,6 +4,7 @@ import LiveKit
 struct PiPOverlayView: View {
     @ObservedObject var liveKitService: LiveKitService
     @State private var speakingParticipants: Set<String> = []
+    private let fadeOutDuration: TimeInterval = 0.6 // Shorter fade duration
     
     var body: some View {
         GeometryReader { geometry in
@@ -13,17 +14,20 @@ struct PiPOverlayView: View {
                         VideoOverlayView(participant: participant, track: track, index: index)
                             .frame(width: 160, height: 90)
                             .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.white.opacity(0.3), lineWidth: 2)
+                            )
                             .shadow(radius: 4)
                             .opacity(speakingParticipants.contains(participant.sid) ? 1.0 : 0.7)
-                            .animation(.easeInOut(duration: 0.3), value: speakingParticipants.contains(participant.sid))
+                            .animation(.easeInOut(duration: fadeOutDuration), value: speakingParticipants.contains(participant.sid))
                             .position(positionForIndex(index, in: geometry.size))
                     }
                 }
             }
         }
-        .onReceive(liveKitService.$participants) { _ in
-            // Update speaking state based on audio levels
-            // This will be implemented in LiveKitService
+        .onReceive(liveKitService.$speakingParticipants) { speaking in
+            speakingParticipants = speaking
         }
     }
     
