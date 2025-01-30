@@ -13,8 +13,8 @@ class MagazineLayoutManager {
         let columns = calculateOptimalColumns(for: elements.count)
         let (textElements, mediaElements) = separateElements(elements)
         
-        // Layout text elements in a newspaper-style column format
-        layoutTextElementsInColumns(textElements, columns: columns, in: size, elements: &updatedElements)
+        // Layout text elements in a newspaper-style column format with overlap
+        layoutTextElementsInColumnsWithOverlap(textElements, columns: columns, in: size, elements: &updatedElements)
         
         // Layout media elements (images, charts) in a balanced grid
         layoutMediaElements(mediaElements, in: size, elements: &updatedElements)
@@ -45,7 +45,8 @@ class MagazineLayoutManager {
         return (textElements, mediaElements)
     }
     
-    private func layoutTextElementsInColumns(_ textElements: [CanvasElement], columns: Int, in size: CGSize, elements: inout [CanvasElement]) {
+    /// Layout text elements in columns with partial overlap threshold
+    private func layoutTextElementsInColumnsWithOverlap(_ textElements: [CanvasElement], columns: Int, in size: CGSize, elements: inout [CanvasElement]) {
         guard !textElements.isEmpty else { return }
         
         let columnWidth = (size.width - columnSpacing * CGFloat(columns + 1)) / CGFloat(columns)
@@ -58,11 +59,12 @@ class MagazineLayoutManager {
             // Get or estimate element height
             let elementHeight = estimateElementHeight(element, columnWidth: columnWidth)
             
-            // Check if we need to move to next column, with partial overlap threshold
+            // Calculate remaining space and overlap threshold
             let remainingSpace = maxColumnHeight - currentY
             let overlapThreshold = elementHeight * 0.4 // Allow up to 40% overlap
             
-            if remainingSpace < elementHeight - overlapThreshold {
+            // Only move to next column if we can't fit the element minus the overlap threshold
+            if remainingSpace < (elementHeight - overlapThreshold) {
                 currentColumn += 1
                 currentY = columnSpacing
                 

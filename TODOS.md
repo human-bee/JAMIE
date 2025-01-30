@@ -370,11 +370,15 @@
        - [ ] Check position memory after speaking changes
        - [ ] Test dragging multiple PiPs to new positions
        - [ ] Verify positions reset correctly on session restart
+       - [ ] Test drag boundaries and edge cases
+       - [ ] Verify PiP remains draggable after participant list changes
    - [ ] Verify magazine layout with various content:
      - [ ] Test column flow with different text lengths
      - [ ] Verify partial overlap threshold (40%) works correctly
      - [ ] Check media grid alignment and spacing
      - [ ] Test dynamic column count adjustment
+     - [ ] Verify text blocks flow naturally between columns
+     - [ ] Test edge cases with very long text blocks
    - [ ] Test premium video quality (1080p/30fps)
    - [ ] Test stereo audio quality
    - [ ] Multi-participant stress test
