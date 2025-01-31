@@ -1,0 +1,28 @@
+# Release Configuration Template
+# Copy this file to Release.xcconfig and fill in your values
+
+// Include production configuration as base
+#include "Production.xcconfig"
+
+// Release-specific build settings
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+ENABLE_NS_ASSERTIONS = NO
+SWIFT_COMPILATION_MODE = wholemodule
+SWIFT_OPTIMIZATION_LEVEL = -O
+ONLY_ACTIVE_ARCH = NO
+ENABLE_TESTABILITY = NO
+
+// Compiler flags
+GCC_PREPROCESSOR_DEFINITIONS = RELEASE=1 $(inherited)
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = RELEASE
+
+// Deployment
+COPY_PHASE_STRIP = YES
+STRIP_INSTALLED_PRODUCT = YES
+
+// Code signing (can be customized later)
+CODE_SIGN_STYLE = Automatic
+CODE_SIGN_IDENTITY = Mac Developer
+
+// Additional release-specific flags
+OTHER_SWIFT_FLAGS = $(inherited) -D RELEASE 
