@@ -87,3 +87,15 @@ pids
 
 # Yarn Integrity file
 .yarn-integrity
+
+# Configuration Files
+*.xcconfig
+!*.xcconfig.template
+
+# Sensitive Data
+*.env
+*.key
+*.pem
+*.p12
+*.cer
+*.keychain
